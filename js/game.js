@@ -7,28 +7,28 @@ const PATH_COLOR = '#bcab90';
 const EMPTYCHAR = '¤';
 const WIDTH = 5;
 const HEIGHT = 4;
-let cellCount = WIDTH*HEIGHT;
+let cellCount = WIDTH * HEIGHT;
 
 //These are all direction combinations for the 15 different path tiles
 //array of sets! should be!
 const shallowPathsDirections = [[1, 5, 7], [3, 5, 7], [1, 3, 5], [1, 3, 7], [1, 3], [1, 5], [3, 7], [5, 7], [1, 7], [3, 5], [1, 3, 5, 7], [1], [3], [5], [7]];
 
-const directionMap =new Map([
-    [[1,3,5,7], [true, true, true, true]],
-    [[1,3,5],   [true, true, true, false]],
-    [[1,3,7],   [true, true, false, true]],
-    [[1,3],     [true, true, false, false]],
-    [[1,5,7],   [true, false, true, true]],
-    [[1,5],     [true, false, true, false]],
-    [[1,7],     [true, false, false, true]],
-    [[1],       [true, false, false, false]],
-    [[3,5,7],   [false, true, true, true]],
-    [[3,5],     [false, true, true, false]],
-    [[3,7],     [false, true, false, true]],
-    [[3],       [false, true, false, false]],
-    [[5,7],     [false, false, true, true]],
-    [[5],       [false, false, true, false]],
-    [[7],       [false, false, false, true]]    
+const directionMap = new Map([
+    [[1, 3, 5, 7], [true, true, true, true]],
+    [[1, 3, 5], [true, true, true, false]],
+    [[1, 3, 7], [true, true, false, true]],
+    [[1, 3], [true, true, false, false]],
+    [[1, 5, 7], [true, false, true, true]],
+    [[1, 5], [true, false, true, false]],
+    [[1, 7], [true, false, false, true]],
+    [[1], [true, false, false, false]],
+    [[3, 5, 7], [false, true, true, true]],
+    [[3, 5], [false, true, true, false]],
+    [[3, 7], [false, true, false, true]],
+    [[3], [false, true, false, false]],
+    [[5, 7], [false, false, true, true]],
+    [[5], [false, false, true, false]],
+    [[7], [false, false, false, true]]
 ]);
 
 
@@ -48,12 +48,12 @@ class Hand {
     }
     fillHand() {
         let handContainer = document.getElementsByClassName('hand-container')[0];
-        if(handContainer == null) console.log('handContainer is null FIX');
-        for(let i = 0; i <5; i++) {
+        if (handContainer == null) console.log('handContainer is null FIX');
+        for (let i = 0; i < 5; i++) {
             let id = 'hand' + this.lastId;
             //generate a random path 
             let path = generateRandomPathTileObj();
-            if(path.owned) console.log('path is owned! ERROR!')
+            if (path.owned) console.log('path is owned! ERROR!')
             let p = path.createDOMElement(id);
             handContainer.appendChild(p);
             this.lastId++;
@@ -68,11 +68,11 @@ class Hand {
  */
 const fillHand = (handObj) => {
     let handContainer = document.getElementsByClassName('hand-container')[0];
-    if(handContainer == null) console.log('handContainer is null FIX');
-    for(let i = 0; i <5; i++) {
+    if (handContainer == null) console.log('handContainer is null FIX');
+    for (let i = 0; i < 5; i++) {
         //generate a random path 
         let path = generateRandomPathTileObj();
-        if(path.owned) console.log('path is owned! ERROR!')
+        if (path.owned) console.log('path is owned! ERROR!')
         let id = 'hand' + handObj.lastId;
         let p = path.createDOMElement(id);
         handContainer.appendChild(p);
@@ -82,8 +82,8 @@ const fillHand = (handObj) => {
 }
 
 
-class Board{
-    constructor(width, height){
+class Board {
+    constructor(width, height) {
         this.width = width;
         this.height = height;
         this.size = this.width * this.height;
@@ -98,9 +98,9 @@ class Board{
      */
     createDOMElement() {
         let gridContainer = document.getElementsByClassName('grid-container')[0];
-        if(gridContainer == null) console.log('grid container is null FIX');
-        for(let i = 0; i < this.size; i++) {
-            let boardTile = new Tile(false,i,true);
+        if (gridContainer == null) console.log('grid container is null FIX');
+        for (let i = 0; i < this.size; i++) {
+            let boardTile = new Tile(false, i, true);
             let tileElement = boardTile.createDOMElement();
             //console.log("tileElement is? " + tileElement)
             gridContainer.appendChild(tileElement);
@@ -144,25 +144,41 @@ class Board{
 
 
 class Tile {
-    constructor(owned=false, id,empty=true) {
+    constructor(owned = false, id, empty = true) {
         this.owned = owned;
         this.id = id; //div id
         this.empty = empty;
+        this.south = false;
+        this.north = false;
+        this.east = false;
+        this.west = false;
+    }
+
+    print() {
+        let str = "[owned:" + this.owned + "\nid:" + this.id + "\nempty:" + this.empty + "\nnorth:" + this.north
+        str += "\nwest:" + this.west + "\neast:" + this.east + "\nsouth:" + this.south + "]"
+        console.log(str)
     }
 
     createDOMElement() {
         let tile = document.createElement('div');
         tile.className = 'grid-cell board-cell';
-        tile.id=this.id;
-        for(let i = 0; i < 9; i++) {
+        tile.id = this.id;
+        for (let i = 0; i < 9; i++) {
             let subCell = document.createElement('div');
             subCell.className = 'resource-unit';
-            subCell.innerHTML = EMPTYCHAR;
+            if (i == 4) {
+                subCell.style.color = 'black';
+                subCell.innerHTML = this.id;
+            } else {
+                subCell.style.color = 'white';
+                subCell.innerHTML = EMPTYCHAR;
+            }
             subCell.style.backgroundColor = GRID_CELL_COLOR;
-            if(i ==0) subCell.style.borderTopLeftRadius = '5px'
-            if(i==2) subCell.style.borderTopRightRadius = '5px'
-            if(i==6) subCell.style.borderBottomLeftRadius = '5px'
-            if(i==8) subCell.style.borderBottomRightRadius = '5px'
+            if (i == 0) subCell.style.borderTopLeftRadius = '5px'
+            if (i == 2) subCell.style.borderTopRightRadius = '5px'
+            if (i == 6) subCell.style.borderBottomLeftRadius = '5px'
+            if (i == 8) subCell.style.borderBottomRightRadius = '5px'
             tile.appendChild(subCell);
         }
         tile.addEventListener('click', boardTileSelected);
@@ -173,29 +189,29 @@ class Tile {
 
     replacePossible(otherTile) {
         return ((this.north == otherTile.north) || (this.south == otherTile.south) ||
-        (this.east == otherTile.east) || (this.west == otherTile.west))
+            (this.east == otherTile.east) || (this.west == otherTile.west))
     }
 
 }
 
 const replacePossible = (target, replace) => {
-    if(target == undefined) return true;
-    return ((target.north ==replace.north) || (target.south ==replace.south) ||
-    (target.east == replace.east) || (target.west == replace.west))
+    if (target == undefined) return true;
+    return ((target.north == replace.north) || (target.south == replace.south) ||
+        (target.east == replace.east) || (target.west == replace.west))
 }
 
 /**
  * Tile with a path on it. 
  * Calculate resources on it after placing in hand.
  */
-class Path extends Tile{
+class Path extends Tile {
     /**
      * 
      * @param {boolean} owned : placed on board or left in hand
      * @param {List<boolean>} cardinals : [n,w,e,s]
      * @param {Array} directions: set of indices for the directions.
      */
-    constructor(owned, cardinals,directions) {
+    constructor(owned, cardinals, directions) {
         super(owned, null, false);
         this.owned = owned;
         this.directions = directions;
@@ -205,7 +221,7 @@ class Path extends Tile{
         this.east = cardinals[2];
         this.north = cardinals[0];
         this.neighbors = {};
-        this.resources = {'g':0, 's':0, 'w':0,'t':0,'p':0};
+        this.resources = { 'g': 0, 's': 0, 'w': 0, 't': 0, 'p': 0 };
     }
 
     /** Create a DOM element with the given path
@@ -219,23 +235,23 @@ class Path extends Tile{
         container.style.borderRadius = '7px'
         this.id = id; //
         this.owned = false;
-        for(let i = 0 ; i< 9; i++) {
+        for (let i = 0; i < 9; i++) {
             let unit = document.createElement('div');
             unit.className = 'resource-unit';
-            if((this.directions.includes(i)) || (i==4)) {
+            if ((this.directions.includes(i)) || (i == 4)) {
                 unit.style.backgroundColor = PATH_COLOR;
                 unit.innerHTML = '.';
                 unit.style.borderRadius = '0px'
             } else {
                 unit.innerHTML = EMPTYCHAR;
-                if(i ==0) unit.style.borderTopLeftRadius = '5px'
-                if(i==2) unit.style.borderTopRightRadius = '5px'
-                if(i==6) unit.style.borderBottomLeftRadius = '5px'
-                if(i==8) unit.style.borderBottomRightRadius = '5px'
+                if (i == 0) unit.style.borderTopLeftRadius = '5px'
+                if (i == 2) unit.style.borderTopRightRadius = '5px'
+                if (i == 6) unit.style.borderBottomLeftRadius = '5px'
+                if (i == 8) unit.style.borderBottomRightRadius = '5px'
             }
             container.appendChild(unit);
         }
-        if(this.owned) {
+        if (this.owned) {
             container.addEventListener('click', boardTileSelected);
         } else {
             container.addEventListener('click', handTileSelected);
@@ -244,42 +260,93 @@ class Path extends Tile{
     }
 
     /**
+     * 
+     * @param {Board} boardObj myBoard 
+     * @param {Tile} adjacentTile : adjacent tile Object
+     * @param {Number} adjacentId : adjacent tile id
+     * @returns 
+     */
+    updateAdjacentTileIfPossible(boardObj, adjacentTile, adjacentId) {
+        //adjacentTile = boardObj.emptyTiles.get(adjacentId);
+        if (!this.owned) {
+            console.log('PATH not OWNED')
+            return;
+        }
+        if ((this.id - boardObj.width == adjacentId) && this.north) {
+            adjacentTile[south] = true;
+        }
+        if ((this.id + boardObj.width == adjacentId) && this.south) {
+            adjacentTile[north] = true;
+        }
+        if ((this.id - 1 == adjacentId) && ((this.id % boardObj.width) != 0) && this.west) {
+            adjacentTile[east] = true;
+        }
+        if ((this.id + 1 == adjacentId) && (((this.id + 1) % boardObj.width) != 0) && this.east) {
+            adjacentTile[west] = true;
+        }
+        console.log(adjacentTile.print())
+        return;
+    }
+
+    /**
      * Check if given path is adjacent to this one.
      * @param {Path} otherPath 
      * @returns {boolean} true if adjacent | false if not adjacent.
      */
     pathAdjacent(otherPath) {
-        if( (this.south && otherPath.north) || (this.east && otherPath.west) ||
-            (this.west && otherPath.east) || (this.north && otherPath.south) ){ 
-                return true;
+        if ((this.south && otherPath.north)) {
+            console.log('adj south')
+            return true
+        } else if ((this.east && otherPath.west)) {
+            console.log('adj east')
+            return true
+        } else if ((this.west && otherPath.east)) {
+            console.log('adj west')
+            return true
+        } else if ((this.north && otherPath.south)) {
+            console.log('adj north')
+            return true
         }
+        // if ((this.south && otherPath.north) || (this.east && otherPath.west) ||
+        //     (this.west && otherPath.east) || (this.north && otherPath.south)) {
+        //     return true;
+        // }
+        console.log('path adjacent with ' + otherPath)
         return false;
     }
 
-    spaceAdjacent(boardObj, id) {
-        if(this.id == undefined) console.error('ERROR: ID NOT SET')
-        if((this.id - boardObj.width == id) && this.north) {return true;
-        }
-        if((this.id + boardObj.width == id) && this.south) return true
-        if((this.id - 1 == id) && ((this.id % boardObj.width) != 0) && this.west) return true
-        if((this.id + 1 == id) && (((this.id+1) % boardObj.width) != 0) && this.east) return true
+
+    spaceAdjacent(boardObj, newBoardId, id) {
+        console.assert(boardObj != undefined)
+        if (this.id == undefined) console.error('ERROR: ID NOT SET')
+        this.id = newBoardId;
+        //console.log('this.id is ' + this.id)
+        //console.log('north is ' + (this.id - boardObj.width) + " vs " + id)
+        //console.log('west is ' + (this.id - 1) + " vs " + id)
+        //console.log('east is ' + (this.id + 1) + " vs " + id)
+        //console.log('south is ' + (this.id + boardObj.width) + " vs " + id)
+        if (((this.id - boardObj.width) == id) && this.north) return true;
+        if (((this.id + boardObj.width) == id) && this.south) return true
+        if (((this.id - 1) == id) && ((this.id % boardObj.width) != 0) && this.west) return true
+        if (((this.id + 1) == id) && (((this.id + 1) % boardObj.width) != 0) && this.east) return true
         return false;
     }
 
-    emptyTileAdjacent(boardObj, id,tileObj) {
-        if(this.id == undefined) console.error('ERROR: ID NOT SET')
-        if((this.id - boardObj.width == id) && this.north) {
+    emptyTileAdjacent(boardObj, id, tileObj) {
+        if (this.id == undefined) console.error('ERROR: ID NOT SET')
+        if ((this.id - boardObj.width == id) && this.north) {
             tileObj.south = true;
             return true;
         }
-        if((this.id + boardObj.width == id) && this.south) {
+        if ((this.id + boardObj.width == id) && this.south) {
             tileObj.north = true
-            return true}
-        if((this.id - 1 == id) && ((this.id % boardObj.width) != 0) && this.west) {
+            return true
+        }
+        if ((this.id - 1 == id) && ((this.id % boardObj.width) != 0) && this.west) {
             tileObj.east = true;
             return true
         }
-        if((this.id + 1 == id) && (((this.id+1) % boardObj.width) != 0) && this.east){
+        if ((this.id + 1 == id) && (((this.id + 1) % boardObj.width) != 0) && this.east) {
             tileObj.west = true
             return true
         }
@@ -292,13 +359,13 @@ class Path extends Tile{
  * @returns {Path} obj or null if error
  */
 function generateRandomPathTileObj() {
-    let randomValue =  Math.floor(Math.random() * 100) % 15;
+    let randomValue = Math.floor(Math.random() * 100) % 15;
     //get random data from directionMap:
     let i = 0;
     for (const key of directionMap.keys()) {
-        if(i == randomValue) {
+        if (i == randomValue) {
             let value = directionMap.get(key);
-            let path = new Path(false, value,key);
+            let path = new Path(false, value, key);
             return path;
         }
         i++;
@@ -315,7 +382,7 @@ function setupAddMoreButton(handObj) {
     let button = document.createElement('button');
     button.id = 'hand-add-button';
     button.innerHTML = 'Add More';
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         fillHand(handObj)
     });
     document.body.appendChild(button);
@@ -332,27 +399,27 @@ let selectedBoardTile = null;
  * @returns 
  */
 const selectedTileOutline = (selectedDiv, board) => {
-    let previouslySelected = (board)? selectedBoardTile : selectedHandPath;
-    if(selectedDiv == previouslySelected) {
+    let previouslySelected = (board) ? selectedBoardTile : selectedHandPath;
+    if (selectedDiv == previouslySelected) {
         console.log('330:DESELECT')
         selectedDiv.style.borderColor = INVISIBLE_COLOR
-        if(board) {
+        if (board) {
             selectedBoardTile = null;
         } else {
             selectedHandPath = null;
         }
     } else if (previouslySelected == null) {
         console.log('334:SELECT')
-        if(board) {
+        if (board) {
             selectedBoardTile = selectedDiv
-            selectedBoardTile.style.borderColor =  SELECTED_COLOR
+            selectedBoardTile.style.borderColor = SELECTED_COLOR
         } else {
             selectedHandPath = selectedDiv
-            selectedHandPath.style.borderColor =  SELECTED_COLOR
+            selectedHandPath.style.borderColor = SELECTED_COLOR
         }
     } else {
         console.log('334:RESELECT')
-        if(board) {
+        if (board) {
             selectedBoardTile.style.borderColor = INVISIBLE_COLOR
             selectedBoardTile = selectedDiv;
         } else {
@@ -378,8 +445,8 @@ const boardTileSelected = e => {
     //locate the div selected and flip its colors
     let selectedDiv = e.target;
     let selectedTileId = parseInt(selectedDiv.id)
-    console.log('board tile id:'+selectedDiv.id)
-    if(selectedHandPath == null) {
+    console.log('board tile id:' + selectedDiv.id)
+    if (selectedHandPath == null) {
         console.log('SELECT HAND TILE FIRST')
         selectedBoardTile = null;
         return;
@@ -403,11 +470,11 @@ const boardTileSelected = e => {
         selectedBoardTile = null;
     } else {
         //tile selected is EMPTY:
-        if(selectedHandPath == undefined) {
+        if (selectedHandPath == undefined) {
             console.error('chose hand path first!')
-            console.log('chose hand path first')
+            //console.log('chose hand path first')
         }
-        else if(selectedHandPath == null) {
+        else if (selectedHandPath == null) {
             console.log('non-hand actions tbd')
             //select/deselect tile/non-hand actions
         } else {
@@ -415,18 +482,35 @@ const boardTileSelected = e => {
             //place hand into Empty spot
             if (myBoard.myTurn == 0) {
                 //regular place
-                console.log('REGULAR PLACING... .. .')
+                //console.log('REGULAR PLACING... .. .')
                 placeHandTileOnBoard()
                 myBoard.myTurn++;
             } else {
                 //check if this is a valid spot.
                 console.log('CHECKING SPOT... .. .')
-                console.log(myHand.tiles)
                 let selectedHandObj = myHand.tiles.get(selectedHandPath.id);
-                if (replacePossible(selectedTileObj,selectedHandObj)) {
-                    console.log('replace valid!')
-                    placeHandTileOnBoard()
+                //check adjacent spots for Path tile
+                let adj = [selectedTileId - myBoard.width, selectedTileId - 1, selectedTileId + 1, selectedTileId + myBoard.width];
+                //north, west, east, south
+                for (let i = 0; i < 4; i++) {
+                    let adjPath = myBoard.myTiles.get(adj[i])
+                    console.log('CHECKING ADJ SPOT FOR PATH VALIDITY at ' + adj[i] + ' index')
+                    if (adjPath != undefined) {
+                        if (((i == 0) && adjPath.south && selectedHandObj.north) ||
+                            ((i == 1) && adjPath.east && selectedHandObj.west) ||
+                            ((i == 2) && adjPath.west && selectedHandObj.east) ||
+                            ((i == 3) && adjPath.north && selectedHandObj.south)) {
+                            console.log('VALID PLACEMENT')
+                            placeHandTileOnBoard()
+                            console.assert(selectedBoardTile == null && selectedHandPath == null)
+                        }
+                    }
                 }
+
+                // if (replacePossible(selectedTileObj, selectedHandObj)) {
+                //     console.log('replace valid!')
+                //     placeHandTileOnBoard()
+                // }
                 //console.log('space adjacent; PROCEED')
 
                 //TODO
@@ -497,12 +581,12 @@ const boardTileSelected = e => {
 
 const handTileSelected = e => {
     // not old hand tiles!
-    if(e.target.id[0] != 'h') {
+    if (e.target.id[0] != 'h') {
         boardTileSelected(e)
         return;
     }
     let selectedDiv = e.target;
-    console.log('hand tile id:'+selectedDiv.id)
+    console.log('hand tile id:' + selectedDiv.id)
     console.assert(e.target.id[0] == 'h')
     selectedTileOutline(selectedDiv, false);
 
@@ -510,13 +594,13 @@ const handTileSelected = e => {
     //go thru all avaliable spots in empty tiles, remove highlights from bad ones
     myBoard.emptyTiles.forEach((key, value) => {
         let emptySpot = document.getElementById(key)
-        if(!replacePossible(emptySpot, selectedHandPath)) {
+        if (!replacePossible(emptySpot, selectedHandPath)) {
             emptySpot.style.pointerEvents = 'none'
             emptySpot.style.opacity = '0.5'
         }
     })
     return;
-                //TODO
+    //TODO
     //this part is never reached!
     /* 
     If there is a selectedBoardTile, there are two options:
@@ -532,39 +616,55 @@ const handTileSelected = e => {
 }
 
 /**
- * 
+ * This is the new function. where placements are VALID
  */
 const placeHandTileOnBoard = () => {
     console.assert(selectedBoardTile != null && selectedHandPath != null)
+    console.assert(selectedBoardTile.id[0] != 'h')
     let boardId = parseInt(selectedBoardTile.id);
     let handTileObj = myHand.tiles.get(selectedHandPath.id)
     let emptyTileObj = myBoard.emptyTiles.get(boardId)
     console.assert(handTileObj != undefined && emptyTileObj != undefined)
 
     //inner map alterations:
+    handTileObj.owned = true
     myBoard.myTiles.set(boardId, handTileObj);
+    let updatedBoardTile = myBoard.myTiles.get(boardId)
     myBoard.emptyTiles.delete(boardId)
     myHand.tiles.delete(selectedHandPath.id)
 
     console.assert(myBoard.myTiles.get(boardId) != undefined)
     console.assert(myBoard.emptyTiles.get(boardId) == undefined)
 
-    //updata adjacent objects:
-    let adj = [boardId-1, bid-myBoard.width, bid+1, bid+myBoard.width]
+    //visual changes:
+    let board = document.getElementsByClassName('grid-container')[0];
+    board.replaceChild(selectedHandPath, selectedBoardTile)
+    let newChild = board.getElementsByClassName('grid-cell hand-cell')[0];
+    console.assert(newChild != undefined)
+    newChild.className = 'grid-cell board-cell'
+    console.assert(newChild.className = 'grid-cell board-cell')
+    newChild.id = selectedBoardTile.id;
+    newChild.style.borderColor = INVISIBLE_COLOR;
+    newChild.style.backgroundColor = 'orange'
+    console.log('newChild')
+    updatedBoardTile.print()
+    // console.log('DEBGUG')
+    // updatedBoardTile.print() //prints correctly
+    let adj = [boardId - 1, boardId - myBoard.width, boardId + 1, boardId + myBoard.width]
     adj.forEach((id) => {
-        let emptyTile = myBoard.emptyTiles.get(id)
-        if(emptyTile != undefined) {
-            if(handTileObj.spaceAdjacent(myBoard, id)) {
-                //this adj space is valid!
-                let div = document.getElementById(id);
-                div.style.pointerEvents = 'auto'
-                div.style.opacity = '1.0'
+        let adjacentTileElement = document.getElementById(id);
+        if (adjacentTileElement != undefined) {
+            if (updatedBoardTile.spaceAdjacent(myBoard, boardId, id)) {
+                console.log(id + ' ADJACENT to ' + boardId)
+                adjacentTileElement.style.pointerEvents = 'auto'
+                adjacentTileElement.style.opacity = '1.0'
+            } else {
+                console.log('NOT ADJACENT')
+                adjacentTileElement.style.pointerEvents = 'none'
+                adjacentTileElement.style.opacity = '0.25'
             }
         }
     })
-
-    //visual changes:
-
     selectedBoardTile = null;
     selectedHandPath = null;
 }
@@ -587,11 +687,11 @@ const puthandTileonBoard = (boardTileObj) => {
     console.assert(myHand.tiles.get((hid)) == undefined)
     //console.log(myBoard.myTiles.get(parseInt(boardTileObj.id)))
     //update adjacent objs:
-    let adj = [bid-1, bid-myBoard.width, bid+1, bid+myBoard.width]
+    let adj = [bid - 1, bid - myBoard.width, bid + 1, bid + myBoard.width]
     adj.forEach((id) => {
         let emptyTile = myBoard.emptyTiles.get(id)
-        if(emptyTile != undefined) {
-            if(handTileObj.spaceAdjacent(myBoard, id)) {
+        if (emptyTile != undefined) {
+            if (handTileObj.spaceAdjacent(myBoard, id)) {
                 //this adj space is valid!
                 let div = document.getElementById(id);
                 div.style.pointerEvents = 'auto'
