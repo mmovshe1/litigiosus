@@ -483,15 +483,26 @@ const boardTileSelected = e => {
             if (myBoard.myTurn == 0) {
                 //regular place
                 //console.log('REGULAR PLACING... .. .')
+                //color all empty tiles UNREACHBALE
+                // let emptyTiles = myBoard.emptyTiles
+                // emptyTiles.forEach((value, key) => {
+                //     let div = document.getElementById(key)
+                //     if (div != undefined) {
+                //         div.style.pointerEvents = 'none'
+                //         div.style.opacity = '0.5'
+                //     }
+                // })
                 placeHandTileOnBoard()
                 myBoard.myTurn++;
             } else {
                 //check if this is a valid spot.
                 console.log('CHECKING SPOT... .. .')
                 let selectedHandObj = myHand.tiles.get(selectedHandPath.id);
+                console.assert(selectedHandObj != undefined)
                 //check adjacent spots for Path tile
                 let adj = [selectedTileId - myBoard.width, selectedTileId - 1, selectedTileId + 1, selectedTileId + myBoard.width];
                 //north, west, east, south
+                let undefinedCount = 0;
                 for (let i = 0; i < 4; i++) {
                     let adjPath = myBoard.myTiles.get(adj[i])
                     console.log('CHECKING ADJ SPOT FOR PATH VALIDITY at ' + adj[i] + ' index')
@@ -503,79 +514,33 @@ const boardTileSelected = e => {
                             console.log('VALID PLACEMENT')
                             placeHandTileOnBoard()
                             console.assert(selectedBoardTile == null && selectedHandPath == null)
+                        } else {
+                            //this has issues
+                            selectedBoardTile.classList.add('shake')
+                            selectedBoardTile.addEventListener("animationend", (event) => {
+                                selectedBoardTile.classList.remove('shake')
+                            });
+                            //deselect
+                            deselect(selectedBoardTile);
                         }
+                    } else {
+                        undefinedCount++;
                     }
                 }
-
-                // if (replacePossible(selectedTileObj, selectedHandObj)) {
-                //     console.log('replace valid!')
-                //     placeHandTileOnBoard()
-                // }
-                //console.log('space adjacent; PROCEED')
-
-                //TODO
+                if (undefinedCount == 4) {
+                    console.assert(selectedBoardTile != null)
+                    selectedBoardTile.classList.add('shake')
+                    selectedBoardTile.addEventListener("animationend", (event) => {
+                        selectedBoardTile.classList.remove('shake')
+                    });
+                    //deselect
+                    deselect(selectedBoardTile);
+                }
                 myBoard.myTurn++;
             }
         }
     }
-    /**
-     * //get Tile obj from myBoard: SIMPLE AND EASY
-    let selectedTileId = parseInt(e.target.id)
-    let selectedTile = myBoard.emptyTiles.get(selectedTileId)
 
-    if(selectedHandPath != null && selectedTile!= undefined) {
-        if (myBoard.myTurn == 0) {
-            puthandTileonBoard(selectedTile);
-        } else {
-            console.log('TODO:check if this placement is possible!') //this has to be in hand
-            //get the 4 cardinals around the spot"
-            let adjNodes = [
-                document.getElementById(selectedTileId-1),
-                document.getElementById(selectedTileId-myBoard.width),
-                document.getElementById(selectedTileId+1),
-                document.getElementById(selectedTileId+myBoard.width),
-            ]
-            let adjId = [selectedTileId-1,selectedTileId-myBoard.width,selectedTileId+1,selectedTileId+myBoard.width];
-            adjNodes.forEach((div) => {
-                if (replacePossible(div,selectedHandPath)) {
-                    console.log('space adjacent; PROCEED')
-                    //div.style.pointerEvents = 'auto'
-                    //div.style.opacity = '1.0'
-                }
-            })
-            //console.log('space adjacent; PROCEED')
-        }  
-    } else if(selectedTile == undefined) {
-        selectedTile = myBoard.myTiles.get(parseInt(e.target.id))
-    } else if(selectedHandPath != null) {
-        console.log('SPACE TAKEN!')
-        //deselect board tile:
-        selectedBoardTile.style.borderColor = INVISIBLE_COLOR;
-        selectedBoardTile = null;
-    }
-
-    //remove highlight 
-    console.log('setting the highlights!')
-
-    //find all adjacent spots 
-    //for each non-empty tile 'value' at position id 'key', find the adjacent spots 
-    myBoard.myTiles.forEach((value, key) => {
-        let div = document.getElementById(key); //key is id
-        div.style.pointerEvents = 'auto'
-        div.style.opacity = '1.0'
-        let possibleAdj = [key-myBoard.width,key+myBoard.width,key-1,key+1]
-        //console.log(possibleAdj)
-        possibleAdj.forEach((id) => {
-            //TODO: check that things are saved into legitimate sopts
-            let adj = document.getElementById(id);
-            //console.log(adj)
-            let emptySpot = myBoard.emptyTiles.get(id);
-            if(adj != undefined && value.spaceAdjacent(myBoard, id,emptySpot) && adj.style.backgroundColor != 'orange') {
-                adj.style.background = 'red'
-            }
-        })
-    })
-     */
 
 }
 
@@ -590,29 +555,17 @@ const handTileSelected = e => {
     console.assert(e.target.id[0] == 'h')
     selectedTileOutline(selectedDiv, false);
 
-    console.log('HIGHLIGHT MODE')
     //go thru all avaliable spots in empty tiles, remove highlights from bad ones
-    myBoard.emptyTiles.forEach((key, value) => {
-        let emptySpot = document.getElementById(key)
-        if (!replacePossible(emptySpot, selectedHandPath)) {
-            emptySpot.style.pointerEvents = 'none'
-            emptySpot.style.opacity = '0.5'
-        }
-    })
+    // let emptyTiles = myBoard.emptyTiles
+    // console.log(emptyTiles)
+    // emptyTiles.forEach((value, key) => {
+    //     let div = document.getElementById(key)
+    //     if (div != undefined) {
+    //         div.style.pointerEvents = 'auto'
+    //         div.style.opacity = '1.0'
+    //     }
+    // })
     return;
-    //TODO
-    //this part is never reached!
-    /* 
-    If there is a selectedBoardTile, there are two options:
-        if (myBoard.myTurn == 0) replace the boardTile with the handTile(selectedDiv)
-        else: check if its valid? should be covered in the other method
-
-
-    If there is no selectedBoardTile, there are these options:
-        if (myBoard.myTurn == 0) all board places are avaliable
-        otherwise: highlight all valid spots for selectedDiv to go into ()
-    */
-    //NOTE: boardTiles selected after handtile!
 }
 
 /**
@@ -645,77 +598,35 @@ const placeHandTileOnBoard = () => {
     console.assert(newChild.className = 'grid-cell board-cell')
     newChild.id = selectedBoardTile.id;
     newChild.style.borderColor = INVISIBLE_COLOR;
-    newChild.style.backgroundColor = 'orange'
+    // newChild.style.backgroundColor = 'orange'
     console.log('newChild')
     updatedBoardTile.print()
     // console.log('DEBGUG')
     // updatedBoardTile.print() //prints correctly
-    let adj = [boardId - 1, boardId - myBoard.width, boardId + 1, boardId + myBoard.width]
-    adj.forEach((id) => {
-        let adjacentTileElement = document.getElementById(id);
-        if (adjacentTileElement != undefined) {
-            if (updatedBoardTile.spaceAdjacent(myBoard, boardId, id)) {
-                console.log(id + ' ADJACENT to ' + boardId)
-                adjacentTileElement.style.pointerEvents = 'auto'
-                adjacentTileElement.style.opacity = '1.0'
-            } else {
-                console.log('NOT ADJACENT')
-                adjacentTileElement.style.pointerEvents = 'none'
-                adjacentTileElement.style.opacity = '0.25'
+    //REWRITE THIS TOMORROW: 
+    console.log('CHECKING SPOT... .. .')
+    //check adjacent spots for Path tile
+    let adj = [boardId - myBoard.width, boardId - 1, boardId + 1, boardId + myBoard.width];
+    //north, west, east, south
+    for (let i = 0; i < 4; i++) {
+        let adjPath = myBoard.myTiles.get(adj[i])
+        console.log('CHECKING ADJ SPOT FOR PATH VALIDITY at ' + adj[i] + ' index')
+        if (adjPath != undefined) {
+            if (((i == 0) && adjPath.south && newChild.north) ||
+                ((i == 1) && adjPath.east && newChild.west) ||
+                ((i == 2) && adjPath.west && newChild.east) ||
+                ((i == 3) && adjPath.north && newChild.south)) {
+                console.log('VALID PLACEMENT')
+                placeHandTileOnBoard()
+                console.assert(selectedBoardTile == null && newChild == null)
             }
         }
-    })
+    }
+
     selectedBoardTile = null;
     selectedHandPath = null;
 }
 
-const puthandTileonBoard = (boardTileObj) => {
-    console.assert(selectedBoardTile != null && selectedHandPath != null)
-
-    //because 
-
-    //get hand obj:
-    handTileObj = myHand.tiles.get(selectedHandPath.id)
-    console.assert(boardTileObj != null && handTileObj != null)
-    //swap obj between maps (deleting from hand)
-    let bid = parseInt(boardTileObj.id)
-    const hid = handTileObj.id;
-    handTileObj.id = boardTileObj.id;
-    myBoard.myTiles.set(bid, handTileObj);
-    myBoard.emptyTiles.delete(bid);
-    myHand.tiles.delete((hid))
-    console.assert(myHand.tiles.get((hid)) == undefined)
-    //console.log(myBoard.myTiles.get(parseInt(boardTileObj.id)))
-    //update adjacent objs:
-    let adj = [bid - 1, bid - myBoard.width, bid + 1, bid + myBoard.width]
-    adj.forEach((id) => {
-        let emptyTile = myBoard.emptyTiles.get(id)
-        if (emptyTile != undefined) {
-            if (handTileObj.spaceAdjacent(myBoard, id)) {
-                //this adj space is valid!
-                let div = document.getElementById(id);
-                div.style.pointerEvents = 'auto'
-                div.style.opacity = '1.0'
-            }
-        }
-    })
-
-    //visual changes:
-    let board = document.getElementsByClassName('grid-container')[0];
-    board.replaceChild(selectedHandPath, selectedBoardTile)
-    let newChild = board.getElementsByClassName('grid-cell hand-cell')[0];
-    console.assert(newChild != undefined)
-    newChild.className = 'grid-cell board-cell'
-    console.assert(newChild.className = 'grid-cell board-cell')
-    newChild.id = selectedBoardTile.id;
-    newChild.style.borderColor = INVISIBLE_COLOR;
-    newChild.style.backgroundColor = 'orange'
-    console.log(newChild)
-    //update values
-    selectedBoardTile = null;
-    selectedHandPath = null;
-    console.assert(selectedBoardTile == null && selectedHandPath == null)
-}
 /**THE CODE THAT RUNS THE WHOLE GAME */
 
 let myBoard = new Board(WIDTH, HEIGHT);
