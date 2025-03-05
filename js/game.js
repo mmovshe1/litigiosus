@@ -32,14 +32,6 @@ const directionMap = new Map([
 ]);
 
 
-// class Game {
-//     constructor() {
-//         this.selectedBoardTile = null;
-//         this.selectedHandPath = null;
-//         this.myBoard = new Board(WIDTH)
-//     }
-// }
-
 class Hand {
     constructor(capacity) {
         this.capacity = capacity;
@@ -481,17 +473,6 @@ const boardTileSelected = e => {
             //selectedHandPath and the destination
             //place hand into Empty spot
             if (myBoard.myTurn == 0) {
-                //regular place
-                //console.log('REGULAR PLACING... .. .')
-                //color all empty tiles UNREACHBALE
-                // let emptyTiles = myBoard.emptyTiles
-                // emptyTiles.forEach((value, key) => {
-                //     let div = document.getElementById(key)
-                //     if (div != undefined) {
-                //         div.style.pointerEvents = 'none'
-                //         div.style.opacity = '0.5'
-                //     }
-                // })
                 placeHandTileOnBoard()
                 myBoard.myTurn++;
             } else {
@@ -555,16 +536,6 @@ const handTileSelected = e => {
     console.assert(e.target.id[0] == 'h')
     selectedTileOutline(selectedDiv, false);
 
-    //go thru all avaliable spots in empty tiles, remove highlights from bad ones
-    // let emptyTiles = myBoard.emptyTiles
-    // console.log(emptyTiles)
-    // emptyTiles.forEach((value, key) => {
-    //     let div = document.getElementById(key)
-    //     if (div != undefined) {
-    //         div.style.pointerEvents = 'auto'
-    //         div.style.opacity = '1.0'
-    //     }
-    // })
     return;
 }
 

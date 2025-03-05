@@ -15,9 +15,12 @@ Tile :
     <!-- div:    reference to DOM element ? -->
     id:     0->(Size-1), then hand id's from SIZE -> inf.
 
-given a tile id, find id's of neighbors
-
-given a tile id, return set of ids of valid neighbors
-
 given two tile ids, swap their Tiles in tileMap. 
 
+
+
+location + NORTH
+location + SOUTH
+bitshifting 
+
+directions? [-1,0] or [0,1]
