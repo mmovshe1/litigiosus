@@ -1,0 +1,263 @@
+html {
+    background-color: rgb(48, 48, 53);
+    color: beige;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: small;
+}
+
+body {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+div {
+    padding: 10px;
+    border: 1px solid #ff2fe3;
+    border-radius: 10px;
+}
+
+.game-container {
+    display: flex;
+    /* display: grid; */
+    /* grid-template-columns: auto auto auto; */
+    gap: 10px;
+    background-color: #DFD8C3;
+    padding: 0 10px 10px 10px;
+    border: none;
+}
+
+.flex-child {
+    align-self: center;
+}
+
+.item1 {
+    grid-column: 1 / span 4;
+}
+
+.item2 {
+    grid-row: 2 /span 3;
+    grid-column: 1;
+}
+
+.item5 {
+    grid-row: 2 /span 3;
+    grid-column: 4;
+}
+
+.item6 {
+    grid-row: 2 / span 3;
+    grid-column: 1 /span 3;
+}
+
+#p1-img {
+    height: 60px;
+}
+
+.resources-container {
+    display: inline-flex;
+    background-color: #BFA38B;
+    color: #F2EFE6;
+    align-items: center;
+    margin: auto;
+    gap: 10px;
+    font-family: "Darumadrop One", serif;
+    font-size: 20px;
+    font-style: normal;
+    padding: 10px;
+    border: none;
+
+}
+
+.resource-type>img {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.resource-type {
+    background-color: #F2EFE6;
+    color: #584A43;
+    font-size: 18px;
+    align-items: center;
+    border: none;
+    /* margin: auto; */
+}
+
+
+.card-container {
+    display: flexbox;
+    background-color: #BFA38B;
+    font-family: "Darumadrop One", serif;
+    font-style: normal;
+}
+
+.card {
+    box-sizing: border-box;
+    background-color: #F2EFE6;
+    border: 3px solid black;
+    color: black;
+    width: 200px;
+}
+
+/*This contains grid and the randomly generated paths*/
+.board-container {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.grid-container {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 5px;
+    /* max-width: min-content; */
+    /* width: max-content; */
+    /* padding: 10px; */
+    background-color: rgb(181, 218, 218);
+}
+
+.path-container {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    /* gap: 5px; */
+    /* grid-template-rows: auto; */
+    height: max-content;
+    /* background-color: #BFA38B; */
+}
+
+.path-container>.grid-cell {
+    box-sizing: content-box;
+    background-color: #BFA38B;
+    border: 3px solid white;
+}
+
+.board-cell {
+    color: black;
+}
+
+.hand-cell {
+    color: white;
+}
+
+.grid-cell {
+    box-sizing: content-box;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: inherit;
+    border: 3px solid white;
+    /* border: none; */
+    width: 90px;
+    height: 90px;
+    padding: 0;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+    /* user-select: none; */
+}
+
+.grid-cell:hover {
+    border: 3px solid rgba(47, 78, 255, 0.75);
+    background-color: whitesmoke;
+    opacity: 0.75;
+    transition: 200ms;
+}
+
+.grid-cell:hover>.resource-unit {
+    border: 3px solid inherit;
+    pointer-events: none;
+}
+
+.grid-cell div:nth-child(1) {
+    border-top-left-radius: 7px;
+    /* Adjust as needed */
+}
+
+.grid-cell div:nth-child(3) {
+    border-top-right-radius: 7px;
+}
+
+.grid-cell div:nth-child(7) {
+    border-bottom-left-radius: 7px;
+}
+
+.grid-cell div:nth-child(9) {
+    border-bottom-right-radius: 7px;
+}
+
+
+.shake {
+    animation: shake 0.75s;
+    animation-iteration-count: 1;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+
+
+.resource-unit {
+    background-color: inherit;
+    color: white;
+    pointer-events: none;
+    padding: 5px;
+    border-radius: 0;
+    border: 1px dashed white;
+    user-select: none;
+}
+
+#hand-add-button {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+button,
+h1 {
+    font-family: "Darumadrop One", serif;
+    font-weight: 400;
+    font-style: normal;
+}

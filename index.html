@@ -8,16 +8,93 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="stylesheet.css">
 </head>
 
-<body>
-  <p>Click "Add More" to generate 5 random paths. Click a path, then its position on the grid. Afterwards, keep placing
-    paths so that one way or another you can reach them.</p>
-  <h1 class="centered">Path Grid</h1>
-  <div class="grid-container centered"></div>
-  <div class="centered hand-container"></div>
-  <script src="js/game.js"></script>
+<body onload="fillTiles()">
+  <div class="resources-container">
+    <img src="img/image.svg" alt="" id="p1-img">
+    <span>MERCHANT DRACONIUM</span>
+    <div class="resource-type" id="r0">
+      <img src="img/type=path.svg" alt="">
+      PATHS: 0
+    </div>
+    <div class="resource-type" id="r1">
+      <img src="img/type=wood.svg" alt="">
+      WOOD: 0
+    </div>
+    <div class="resource-type" id="r2">
+      <img src="img/type=water.svg" alt="">
+      WATER: 0
+    </div>
+    <div class="resource-type" id="r3">
+      <img src="img/type=grain.svg" alt="">
+      GRAIN: 0
+    </div>
+    <div class="resource-type" id="r4">
+      <img src="img/type=rock.svg" alt="">
+      STONE: 0
+    </div>
+    <span id="day-counter">DAY 0</span>
+  </div>
+  <div class="button-container">
+    <button>END TURN</button>
+    <button>CONFIRM</button>
+  </div>
+  <div class="game-container">
+    <div class="card-container flex-child" id="p1"> MY CARDS
+      <div class="card">
+        <span>HERBOLOGIST CARD</span>
+      </div>
+    </div>
+    <div class="board-container flex-child">
+      <div class="grid-container"></div>
+      <div class="path-container"></div>
+    </div>
+    <div class="card-container flex-child" id="p2">NO VISITORS</div>
+  </div>
+  <script src="js/arrayed.js"></script>
 </body>
+<script>
+  function fillTiles() {
+    // fillGrid()
+    // fillHand()
+  }
+  function fillHand() {
+    let container = document.getElementsByClassName("path-container")[0]
+    console.log(container)
+    console.assert(container != undefined)
+    for (let i = 0; i < 5; i++) {
+      let tile = document.createElement("div")
+      tile.classList = "grid-cell"
+      for (let j = 0; j < 9; j++) {
+        let resource = document.createElement("div")
+        resource.classList = "resource-unit"
+        resource.style.backgroundColor = '#BFA38B';
+        resource.innerHTML = '*'
+        tile.appendChild(resource)
+      }
+      container.appendChild(tile)
+    }
+  }
+
+  function fillGrid() {
+    let container = document.getElementsByClassName("grid-container")[0]
+    console.log(container)
+    console.assert(container != undefined)
+    for (let i = 0; i < 25; i++) {
+      let tile = document.createElement("div")
+      tile.classList = "grid-cell"
+      for (let j = 0; j < 9; j++) {
+        let resource = document.createElement("div")
+        resource.classList = "resource-unit"
+        resource.style.backgroundColor = 'inherit'
+        resource.innerHTML = '' + j
+        tile.appendChild(resource)
+      }
+      container.appendChild(tile)
+    }
+  }
+</script>
 
 </html>
