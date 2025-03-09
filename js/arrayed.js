@@ -39,6 +39,7 @@ const Colors = {
     WATER: "#73B7FF",
     GRAIN: "#D49C3F",
     STONE: "#7B93AB",
+    INVISIBLE: '#ffffff00',
 };
 
 
@@ -251,8 +252,9 @@ class Tile {
     }
 }
 
-let activeSpot = null
-let activeTile = null
+
+
+let activeObj = [null /*activeDiv*/, null /*activeTile*/]
 
 const tileClicked = e => {
     console.log('TILE CLICKED!')
@@ -262,13 +264,25 @@ const tileClicked = e => {
 
     if (e.target.id[0] === 'h') {
         console.log('path tile selected!')
-        activeTile = [e.target, game.board.findTentativeTileById(e.target.id)]
-        console.log(activeTile[0], activeTile[1])
+        if (activeObj == [null, null]) {
+            activeObj = [e.target, game.board.findTentativeTileById(e.target.id)]
+            activeObj[0].style.borderColor = 'blue'
+        } else if (activeObj[0] != null && activeObj[0].parentElement.className == 'grid-container') {
+            //deselect :
+            activeObj[0].style.borderColor = 'inherit'// Colors.INVISIBLE
+        }
+        console.log(activeObj[0], activeObj[1])
+
+        //selected a path tile --> now must select a grid tile
+
     } else {
         console.log('grid tile selected!')
         let id = parseInt(e.target.id)
-        activeSpot = [e.target, game.board.grid.at(id)]
-        console.log(activeSpot)
+
+        //if previous tile selected is a path tile, proceed with placing tile at this location!
+
+        activeObj = [e.target, game.board.grid.at(id)]
+        console.log(activeObj)
     }
     return
 }
