@@ -104,15 +104,10 @@ class Board {
 
     findTentativeTileById(id) {
         this.tentativeSpot.forEach((item) => {
-            console.log(item)
-            console.log(id + " vs " + item.identification)
-            console.log(typeof (item.identification), typeof (id))
             if (item.identification == id) {
-                console.log('equal')
                 return item
             }
         })
-        console.log('this is not reached')
         return undefined;
     }
 
@@ -268,6 +263,7 @@ const tileClicked = e => {
     if (e.target.id[0] === 'h') {
         console.log('path tile selected!')
         activeTile = [e.target, game.board.findTentativeTileById(e.target.id)]
+        console.log(activeTile[0], activeTile[1])
     } else {
         console.log('grid tile selected!')
         let id = parseInt(e.target.id)
