@@ -139,6 +139,17 @@ class Board {
         return new Tile(id, card, temp)
     }
 
+    drawOnGrid(destinationId, tentativeTile) {
+        //get the tile displaying on the grid
+        let item = document.getElementById(tentativeTile.id)
+        //remove from parent put on grid
+        let grid = item.parentElement
+        let dest = document.getElementById(destinationId)
+        grid.replaceChild(item, dest)
+        item.id = destinationId
+
+    }
+
     placeOnGrid(gridSpot, tentativeTile) {
         //get the Tile from grid:
         let clonedTile = new Tile(gridSpot, tentativeTile.cardinals, tentativeTile.resourceMatrix);
@@ -182,21 +193,9 @@ class Tile {
             this.adjacents = undefined
         }
         this.resourceMatrix = resourceMatrix
-        //this.tileClicked = this.tileClicked.bind(this)
         this.active = false
     }
 
-    // tileClicked = e => {
-    //     console.log('TILE CLICKED!')
-    //     console.log(e.target.id)
-
-    //     if (e.target.id[0] === 'h') {
-    //         console.log('path tile selected!')
-    //     } else {
-    //         console.log('grid tile selected!')
-    //     }
-    //     return
-    // }
 
     toString() {
         let str = ''
@@ -260,21 +259,25 @@ const tileClicked = e => {
     console.log('TILE CLICKED!')
     console.log(e.target.id)
 
+    //show its clicked
     e.target.style.border = '3px solid blue'
-
+    //deselect any siblings
+    let parent = e.target.parentElement
+    let siblings = [...parent.children].filter(el => el !== e.target)
+    siblings.forEach((sib) => {
+        sib.style.border = '3px solid white'
+    })
+    //logic with previous active element:
     if (e.target.id[0] === 'h') {
-        console.log('path tile selected!')
-        if (activeObj == [null, null]) {
-            activeObj = [e.target, game.board.findTentativeTileById(e.target.id)]
-            activeObj[0].style.borderColor = 'blue'
-        } else if (activeObj[0] != null && activeObj[0].parentElement.className == 'grid-container') {
-            //deselect :
-            activeObj[0].style.borderColor = 'inherit'// Colors.INVISIBLE
+        //selected path
+        //place path is previously selected is a grid location:
+        if (activeObj[0] != null) {
+            if (activeObj[0].parentElement.className == 'grid-container') {
+                //place path on grid spot
+                //game.board.placeOnGrid(parseInt(activeObj[0].id), game.board.findTentativeTileById(e.target.id))
+                //game.board.drawOnGrid()
+            }
         }
-        console.log(activeObj[0], activeObj[1])
-
-        //selected a path tile --> now must select a grid tile
-
     } else {
         console.log('grid tile selected!')
         let id = parseInt(e.target.id)
